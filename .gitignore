@@ -1,5 +1,15 @@
 # MacOS
 .DS_STORE
 
-# Transmitted Data
-Transmitted-Data/
+# Transmitted Data File
+Transmitted-Data
+
+# Preshared Data Directory
+Preshared-Data/
+
+# Private Data Directories
+receiver/
+sender/
+
+# Java
+*.class
