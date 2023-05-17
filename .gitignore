@@ -1,15 +1,10 @@
 # MacOS
 .DS_STORE
 
-# Transmitted Data File
-Transmitted-Data
-
-# Preshared Data Directory
-Preshared-Data/
-
-# Private Data Directories
-receiver/
-sender/
+# Keys
+*.pubkey
+*.privkey
+*.key
 
 # Java
 *.class

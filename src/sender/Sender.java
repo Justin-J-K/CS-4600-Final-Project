@@ -63,9 +63,17 @@ public class Sender {
 
         System.out.println("\nEncrypted AES Key and IV: " + Base64.getEncoder().encodeToString(encryptedKeyIv));
 
-        // define the message to be encrypted and 
+        // get the message to be encrypted and 
         // encrypt the message using AES-128 CBC
-        String messageToEncrypt = "This is a message to be encrypted.";
+        String messageToEncrypt;
+        File messageFile = new File("sender/message.txt");
+        try {
+            messageToEncrypt = new String(Files.readString(messageFile.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         byte[] ciphertext = aesCipher.encrypt(messageToEncrypt);
 
         System.out.println("\nPlaintext: " + messageToEncrypt);
