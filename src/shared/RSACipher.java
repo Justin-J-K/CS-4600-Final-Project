@@ -25,6 +25,12 @@ public class RSACipher {
     private RSAPrivateKey privateKey;
     private RSAPublicKey publicKey;
 
+    /**
+     * Generate partyName's RSA key pair or read them from files if
+     * they already exist. The keys that are generated are 2048 bits long.
+     * 
+     * @param partyName The current party that is generating their own keys
+     */
     public void generateOrReadKeyPair(String partyName) {
         String publicPath = "Preshared-Data/" + partyName + ".pubkey";
         String privatePath = partyName + "/" + partyName + ".privkey";
@@ -35,6 +41,7 @@ public class RSACipher {
         if (publicKeyFile.exists()) {
             byte[] publicKeyBytes;
 
+            // read the public key file
             try {
                 publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
             } catch (IOException e) {
@@ -43,6 +50,7 @@ public class RSACipher {
 
             byte[] privateKeyBytes;
 
+            // read the private key file
             try {
                 privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
             } catch (IOException e) {
@@ -122,6 +130,12 @@ public class RSACipher {
         }
     }
 
+    /**
+     * Read the otherParty's public key and set the current instance's
+     * public key to the otherParty's public key.
+     * 
+     * @param otherParty
+     */
     public void readSharedPublicKey(String otherParty) {
         String path = "Preshared-Data/" + otherParty + ".pubkey";
         File keyFile = new File(path);
@@ -167,12 +181,15 @@ public class RSACipher {
         return privateKey;
     }
 
+    // encrypt the plaintext using the public key
     public byte[] encrypt(byte[] plaintext) {
         byte[] ciphertext;
 
         try {
+            // initialise cipher with RSA ECB 
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            // encrypt the plaintext
             ciphertext = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException e) {
@@ -182,12 +199,15 @@ public class RSACipher {
         return ciphertext;
     }
 
+    // decrypt the ciphertext using the private key
     public byte[] decrypt(byte[] ciphertext) {
         byte[] plaintext;
 
         try {
+            // initialize cipher with RSA ECB
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            // decrypt the ciphertext
             plaintext = cipher.doFinal(ciphertext);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException e) {

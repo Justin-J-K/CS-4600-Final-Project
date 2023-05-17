@@ -10,6 +10,9 @@ import shared.AESCipher;
 import shared.MACAlgorithm;
 import shared.RSACipher;
 
+/*
+ * Receiver program is run after first running the Sender program.
+ */
 public class Receiver {
     
     public static void main(String[] args) {
