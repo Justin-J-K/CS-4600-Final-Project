@@ -53,6 +53,8 @@ public class Receiver {
             throw new IllegalStateException(e);
         }
 
+        System.out.println("Received Data: " + new String(receivedDataBase64));
+
         // decode the transmitted data from Base64
         byte[] receivedData = Base64.getDecoder().decode(receivedDataBase64);
 
@@ -65,13 +67,16 @@ public class Receiver {
 
         // compare the calculate MAC and the received MAC
         boolean sameMac = Arrays.equals(mac, calculatedMac);
+
+        System.out.println("\nReceived MAC: " + Base64.getEncoder().encodeToString(mac));
+        System.out.println("Calculated MAC: " + Base64.getEncoder().encodeToString(calculatedMac));
         System.out.println("Authenticity & Integrity: " + (sameMac ? "GOOD" : "BAD"));
 
         // separate the key, IV, and ciphertext into key and IV; and ciphertext
         byte[] encryptedKeyIv = Arrays.copyOfRange(keyIvAndCiphertext, 0, 256);
         byte[] ciphertext = Arrays.copyOfRange(keyIvAndCiphertext, 256, keyIvAndCiphertext.length);
 
-
+        System.out.println("\nEncrypted AES Key and IV: " + Base64.getEncoder().encodeToString(encryptedKeyIv));
 
         // decrypt the encrypted key and IV using RSA with the receiver's private key
         byte[] aesKeyAndIv = receiverRsa.decrypt(encryptedKeyIv);
@@ -80,6 +85,10 @@ public class Receiver {
         byte[] aesKey = Arrays.copyOfRange(aesKeyAndIv, 0, 16);
         byte[] iv = Arrays.copyOfRange(aesKeyAndIv, 16, 32);
 
+        System.out.println("\nDecrypted AES Key and IV:");
+        System.out.println("\tAES Key: " + Base64.getEncoder().encodeToString(aesKey));
+        System.out.println("\tAES IV: " + Base64.getEncoder().encodeToString(iv));
+
         AESCipher aesCipher = new AESCipher();
         aesCipher.setKeyBytes(aesKey);
         aesCipher.setIvBytes(iv);   
@@ -87,7 +96,8 @@ public class Receiver {
         // decrypt the ciphertext using the AES key and IV
         String plaintext = aesCipher.decrypt(ciphertext);
 
-        System.out.println("Decrypted: " + plaintext);
+        System.out.println("\nCiphertext: " + Base64.getEncoder().encodeToString(ciphertext));
+        System.out.println("Plaintext: " + plaintext);
 
     }
 

@@ -51,16 +51,25 @@ public class Sender {
         AESCipher aesCipher = new AESCipher();
         aesCipher.generateKeyAndIV();
 
+        System.out.println("Generated AES Key and IV:");
+        System.out.println("\tAES Key: " + Base64.getEncoder().encodeToString(aesCipher.getKeyBytes()));
+        System.out.println("\tAES IV: " + Base64.getEncoder().encodeToString(aesCipher.getIvBytes()));
+
         // concatenate the 128-bit AES key and initialization vector
         byte[] aesKeyAndIv = concatenateBytes(aesCipher.getKeyBytes(), aesCipher.getIvBytes());
 
         // encrypt the concatenation of the key and IV with RSA ECB using the receiver's public key
-        byte[] encryptedKeyIv = receiverRsa.encrypt(aesKeyAndIv);   // 2048 bits
+        byte[] encryptedKeyIv = receiverRsa.encrypt(aesKeyAndIv);
+
+        System.out.println("\nEncrypted AES Key and IV: " + Base64.getEncoder().encodeToString(encryptedKeyIv));
 
         // define the message to be encrypted and 
         // encrypt the message using AES-128 CBC
-        String messageToEncrypt = "This is a message to be what.";
+        String messageToEncrypt = "This is a message to be encrypted.";
         byte[] ciphertext = aesCipher.encrypt(messageToEncrypt);
+
+        System.out.println("\nPlaintext: " + messageToEncrypt);
+        System.out.println("Ciphertext: " + Base64.getEncoder().encodeToString(ciphertext));
 
         // concatenate the encrypted key and IV with the encrypted message
         byte[] keyIvAndCiphertext = concatenateBytes(encryptedKeyIv, ciphertext);
@@ -68,11 +77,15 @@ public class Sender {
         // calculate the MAC of the encrypted key, IV and message
         byte[] mac = macAlgorithm.calculateMAC(keyIvAndCiphertext);
 
+        System.out.println("\nMAC: " + Base64.getEncoder().encodeToString(mac));
+
         // concatenate the key, IV, and message with the MAC
         byte[] finalData = concatenateBytes(keyIvAndCiphertext, mac);
 
         // encode the final data into Base64
         byte[] finalDataBase64 = Base64.getEncoder().encode(finalData);
+
+        System.out.println("\nTransmitted Data: " + new String(finalDataBase64));
 
         // transmit the Base64-encoded data to the receiver
         File transmitFile = new File("Transmitted-Data");
