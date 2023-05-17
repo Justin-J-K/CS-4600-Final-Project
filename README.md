@@ -1,2 +1,3 @@
-# CS-4600-Final-Project
+# CS4600 Final Project
  
+Made by Justin Kim
