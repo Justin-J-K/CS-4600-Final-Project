@@ -6,5 +6,8 @@
 *.privkey
 *.key
 
+# Transmitted Data
+Transmitted-Data
+
 # Java
 *.class
